@@ -1,7 +1,6 @@
-package kiwi.tests;
+package kiwi;
 
 import haxe.Timer;
-import haxe.unit.TestCase;
 import kiwi.Constraint;
 import kiwi.Expression;
 import kiwi.frontend.ConstraintParser;
@@ -9,50 +8,53 @@ import kiwi.frontend.VarResolver;
 import kiwi.Solver;
 import kiwi.Term;
 import kiwi.Variable;
+import utest.Assert;
 
-class TestStrengths extends TestCase {
+class TestStrengths {
 	public function testOrdering() {
-		assertTrue(Strength.weak < Strength.medium);
-		assertTrue(Strength.medium < Strength.strong);
-		assertTrue(Strength.strong < Strength.required);
-		assertTrue(Strength.clamp(Strength.required + 1) == Strength.required);
+		Assert.isTrue(Strength.weak < Strength.medium);
+		Assert.isTrue(Strength.medium < Strength.strong);
+		Assert.isTrue(Strength.strong < Strength.required);
+		Assert.isTrue(Strength.clamp(Strength.required + 1) == Strength.required);
 	}
 	
 	public function testCreation() {
 		var s1 = Strength.create(1, 2, 3);
 		var s2 = Strength.create(4, 5, 6);
 		
-		assertTrue(s2 > s1);
+		Assert.isTrue(s2 > s1);
 	}
 }
 
-class TestExpressions extends TestCase {
+class TestExpressions {
 	public function test() {
 		var a = new Expression();
 		var b = new Expression();
 		
-		assertTrue(a.constant == b.constant && a.constant == 0);
-		assertTrue(a.isConstant() && b.isConstant());
-		assertTrue(a.terms.length == 0 && b.terms.length == 0);
-		assertTrue(a.value() == 0 && b.value() == 0);
+		Assert.isTrue(a.constant == b.constant && a.constant == 0);
+		Assert.isTrue(a.isConstant() && b.isConstant());
+		Assert.isTrue(a.terms.length == 0 && b.terms.length == 0);
+		Assert.isTrue(a.value() == 0 && b.value() == 0);
 		
 		var c = new Expression([ new Term(new Variable("a", 1), 2) ], 3);
 		var d = new Expression([ new Term(new Variable("b", 1), 3) ], 4);
 		
-		assertTrue(c.constant == 3 && d.constant == 4);
-		assertTrue(!c.isConstant() && !d.isConstant());
-		assertTrue(c.terms.length == 1 && d.terms.length == 1);
-		assertTrue(c.value() == 5 && d.value() == 7);
+		Assert.isTrue(c.constant == 3 && d.constant == 4);
+		Assert.isTrue(!c.isConstant() && !d.isConstant());
+		Assert.isTrue(c.terms.length == 1 && d.terms.length == 1);
+		Assert.isTrue(c.value() == 5 && d.value() == 7);
 	}
 }
 
-class TestConstraints extends TestCase {
+class TestConstraints {
 	public function test() {
-		assertTrue(true); // TODO
+		Assert.isTrue(true); // TODO
 	}
 }
 
-class TestSolver extends TestCase {
+class SolverTests {
+	public function new() {}
+	
 	public function testAddRemoveConstraints() {
 		
 		try {
@@ -82,7 +84,7 @@ class TestSolver extends TestCase {
 			trace("Confirming that constraints were added to solver");
 			Timer.measure(function() {
 				for (constraint in constraints) {
-					assertTrue(solver.hasConstraint(constraint));
+					Assert.isTrue(solver.hasConstraint(constraint));
 				}
 			});
 			
@@ -95,10 +97,10 @@ class TestSolver extends TestCase {
 		
 		} catch(msg:String) {
 			trace("Error occurred: " + msg);
-			assertTrue(false);
+			Assert.isTrue(false);
 		}
 		
-		assertTrue(true);
+		Assert.isTrue(true);
 	}
 	
 	public function testAddRemoveEditVars() {
@@ -124,7 +126,7 @@ class TestSolver extends TestCase {
 			trace("Confirming edit vars were added to solver");
 			Timer.measure(function() {
 				for (i in 0...vars.length) {
-					assertTrue(solver.hasEditVariable(vars[i]));
+					Assert.isTrue(solver.hasEditVariable(vars[i]));
 				}
 			});
 			
@@ -143,10 +145,10 @@ class TestSolver extends TestCase {
 			});
 		} catch(msg:String) {
 			trace("Error occurred: " + msg);
-			assertTrue(false);
+			Assert.isTrue(false);
 		}
 		
-		assertTrue(true);
+		Assert.isTrue(true);
 	}
 	
 	public function testConstraintStrengths() {
@@ -163,26 +165,26 @@ class TestSolver extends TestCase {
 			var required = addConstraint(solver, ConstraintParser.parseConstraint("x == 400", "required", resolver));
 			
 			solver.updateVariables();
-			assertTrue(x.value == 400);
+			Assert.isTrue(x.value == 400);
 			solver.removeConstraint(required);
 			solver.updateVariables();
-			assertTrue(x.value == 300);
+			Assert.isTrue(x.value == 300);
 			solver.removeConstraint(strong);
 			solver.updateVariables();
-			assertTrue(x.value == 200);
+			Assert.isTrue(x.value == 200);
 			solver.removeConstraint(medium);
 			solver.updateVariables();
-			assertTrue(x.value == 100);
+			Assert.isTrue(x.value == 100);
 			solver.removeConstraint(weak);
 			solver.updateVariables();
-			assertTrue(x.value == 0);
+			Assert.isTrue(x.value == 0);
 			
 		} catch(msg:String) {
 			trace("Error occurred: " + msg);
-			assertTrue(false);
+			Assert.isTrue(false);
 		}
 		
-		assertTrue(true);
+		Assert.isTrue(true);
 		
 	}
 	
