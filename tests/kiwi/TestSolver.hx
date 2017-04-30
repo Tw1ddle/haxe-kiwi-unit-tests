@@ -2,61 +2,17 @@ package kiwi;
 
 import haxe.Timer;
 import kiwi.Constraint;
-import kiwi.Expression;
+import kiwi.Solver;
+import kiwi.Variable;
 import kiwi.frontend.ConstraintParser;
 import kiwi.frontend.VarResolver;
-import kiwi.Solver;
-import kiwi.Term;
-import kiwi.Variable;
 import utest.Assert;
 
-class TestStrengths {
-	public function testOrdering() {
-		Assert.isTrue(Strength.weak < Strength.medium);
-		Assert.isTrue(Strength.medium < Strength.strong);
-		Assert.isTrue(Strength.strong < Strength.required);
-		Assert.isTrue(Strength.clamp(Strength.required + 1) == Strength.required);
+class TestSolver {
+	public function new() {
 	}
-	
-	public function testCreation() {
-		var s1 = Strength.create(1, 2, 3);
-		var s2 = Strength.create(4, 5, 6);
-		
-		Assert.isTrue(s2 > s1);
-	}
-}
-
-class TestExpressions {
-	public function test() {
-		var a = new Expression();
-		var b = new Expression();
-		
-		Assert.isTrue(a.constant == b.constant && a.constant == 0);
-		Assert.isTrue(a.isConstant() && b.isConstant());
-		Assert.isTrue(a.terms.length == 0 && b.terms.length == 0);
-		Assert.isTrue(a.value() == 0 && b.value() == 0);
-		
-		var c = new Expression([ new Term(new Variable("a", 1), 2) ], 3);
-		var d = new Expression([ new Term(new Variable("b", 1), 3) ], 4);
-		
-		Assert.isTrue(c.constant == 3 && d.constant == 4);
-		Assert.isTrue(!c.isConstant() && !d.isConstant());
-		Assert.isTrue(c.terms.length == 1 && d.terms.length == 1);
-		Assert.isTrue(c.value() == 5 && d.value() == 7);
-	}
-}
-
-class TestConstraints {
-	public function test() {
-		Assert.isTrue(true); // TODO
-	}
-}
-
-class SolverTests {
-	public function new() {}
 	
 	public function testAddRemoveConstraints() {
-		
 		try {
 			var solver = new Solver();
 			var resolver = new VarResolver();
